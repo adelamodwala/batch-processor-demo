@@ -1,0 +1,10 @@
+{"namespace": "com.adel.batch.processordemo.model.avro",
+ "type": "record",
+ "name": "Book",
+ "fields": [
+     {"name": "seq_id", "type": "long"},
+     {"name": "name", "type": "string"},
+     {"name": "author",  "type": "string"},
+     {"name": "category", "type": ["string", "null"]}
+ ]
+}
