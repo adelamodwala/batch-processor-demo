@@ -2,6 +2,7 @@ package com.adel.batch.processordemo.batch;
 
 import com.adel.batch.processordemo.batch.document.BookDocument;
 import com.adel.batch.processordemo.batch.job.BatchRepositoryItemWriter;
+import com.adel.batch.processordemo.batch.job.BookBulkRepositoryItemWriter;
 import com.adel.batch.processordemo.batch.job.JobListener;
 import com.adel.batch.processordemo.batch.repository.BookRepository;
 import com.adel.batch.processordemo.model.avro.Book;
@@ -15,8 +16,9 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.partition.support.MultiResourcePartitioner;
 import org.springframework.batch.core.partition.support.Partitioner;
+import org.springframework.batch.integration.async.AsyncItemProcessor;
+import org.springframework.batch.integration.async.AsyncItemWriter;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.avro.AvroItemReader;
 import org.springframework.batch.item.avro.builder.AvroItemReaderBuilder;
@@ -26,9 +28,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.io.BufferedReader;
@@ -48,6 +50,8 @@ public class BatchConfig {
     public JobBuilderFactory jobBuilderFactory;
     public StepBuilderFactory stepBuilderFactory;
     public BookRepository bookRepository;
+    private String READ_FOLDER = "records-100m" + "/";
+    private int CHUNK_SIZE = 100_000;
 
     @Autowired
     private AvroItemReader<Book> avroItemReader;
@@ -77,9 +81,9 @@ public class BatchConfig {
     @StepScope
     @Bean
     public ItemWriter<BookDocument> itemWriter() {
-        BatchRepositoryItemWriter<BookDocument> batchWriter = new BatchRepositoryItemWriter<>();
-        batchWriter.setRepository(bookRepository);
-        return batchWriter;
+        BookBulkRepositoryItemWriter<BookDocument> bulkWriter = new BookBulkRepositoryItemWriter<>();
+        bulkWriter.setRepository(bookRepository);
+        return bulkWriter;
     }
 
     @Bean
@@ -93,9 +97,9 @@ public class BatchConfig {
 
         MultiResourcePartitioner partitioner = new MultiResourcePartitioner();
         Resource[] resources = new Resource[fileNames.size()];
-        for(int i = 0; i < fileNames.size(); i++) {
+        for (int i = 0; i < fileNames.size(); i++) {
             try {
-                resources[i] = new UrlResource("http://freya.local:3000/" + fileNames.get(i));
+                resources[i] = new UrlResource("http://freya.local:3000/" + READ_FOLDER + fileNames.get(i));
             } catch (MalformedURLException e) {
                 log.error(String.valueOf(e));
             }
@@ -110,7 +114,7 @@ public class BatchConfig {
     public Step step1() {
         return stepBuilderFactory.get("step1")
                 .tasklet(((stepContribution, chunkContext) -> {
-                    bookRepository.deleteAll();
+                    bookRepository.deleteAllBulk();
                     return RepeatStatus.FINISHED;
                 }))
                 .build();
@@ -119,7 +123,7 @@ public class BatchConfig {
     @Bean
     public Step step2() {
         return stepBuilderFactory.get("step2")
-                .<Book, BookDocument>chunk(100)
+                .<Book, BookDocument>chunk(CHUNK_SIZE)
                 .reader(avroItemReader)
                 .processor(processor())
                 .writer(itemWriter())
@@ -145,7 +149,7 @@ public class BatchConfig {
     }
 
     @Bean
-    public Job importBooksJob(JobListener listener) throws IOException {
+    public Job importBooksJob(JobListener listener) {
         return jobBuilderFactory.get("importBooksJob")
                 .incrementer(new RunIdIncrementer())
                 .listener(listener)
@@ -156,7 +160,7 @@ public class BatchConfig {
     }
 
     private List<String> extractManifest() throws IOException {
-        InputStream manifestIs = new URL("http://freya.local:3000/manifest").openStream();
+        InputStream manifestIs = new URL("http://freya.local:3000/" + READ_FOLDER + "manifest").openStream();
         BufferedReader manifestReader = new BufferedReader(new InputStreamReader(manifestIs));
         String line;
         List<String> result = new ArrayList<>();

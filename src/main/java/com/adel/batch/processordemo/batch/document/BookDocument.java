@@ -4,10 +4,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.Id;
+
 @Document(collection = "book")
 @Data
 @NoArgsConstructor
-public class BookDocument {
+public class BookDocument extends org.bson.Document {
+    @Id
     private String id;
     private long seqId;
     private String name;
