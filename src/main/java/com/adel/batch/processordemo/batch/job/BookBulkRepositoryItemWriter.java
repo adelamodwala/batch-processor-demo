@@ -1,20 +1,16 @@
 package com.adel.batch.processordemo.batch.job;
 
 import com.adel.batch.processordemo.batch.document.BookDocument;
-import com.adel.batch.processordemo.batch.repository.BookRepository;
+import com.adel.batch.processordemo.batch.repository.mongo.BookRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.adapter.AbstractMethodInvokingDelegator.InvocationTargetThrowableWrapper;
-import org.springframework.batch.item.adapter.DynamicMethodInvocationException;
 import org.springframework.batch.item.data.RepositoryItemWriter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.MethodInvoker;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**

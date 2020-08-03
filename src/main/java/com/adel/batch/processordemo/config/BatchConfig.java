@@ -1,10 +1,9 @@
 package com.adel.batch.processordemo.batch;
 
 import com.adel.batch.processordemo.batch.document.BookDocument;
-import com.adel.batch.processordemo.batch.job.BatchRepositoryItemWriter;
 import com.adel.batch.processordemo.batch.job.BookBulkRepositoryItemWriter;
 import com.adel.batch.processordemo.batch.job.JobListener;
-import com.adel.batch.processordemo.batch.repository.BookRepository;
+import com.adel.batch.processordemo.batch.repository.mongo.BookRepository;
 import com.adel.batch.processordemo.model.avro.Book;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -16,8 +15,6 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.partition.support.MultiResourcePartitioner;
 import org.springframework.batch.core.partition.support.Partitioner;
-import org.springframework.batch.integration.async.AsyncItemProcessor;
-import org.springframework.batch.integration.async.AsyncItemWriter;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.avro.AvroItemReader;
@@ -30,7 +27,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.io.BufferedReader;

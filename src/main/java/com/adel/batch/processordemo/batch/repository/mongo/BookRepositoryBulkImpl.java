@@ -1,4 +1,4 @@
-package com.adel.batch.processordemo.batch.repository;
+package com.adel.batch.processordemo.batch.repository.mongo;
 
 import com.adel.batch.processordemo.batch.document.BookDocument;
 import com.mongodb.bulk.BulkWriteResult;

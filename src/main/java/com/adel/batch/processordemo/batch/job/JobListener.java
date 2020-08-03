@@ -1,6 +1,6 @@
 package com.adel.batch.processordemo.batch.job;
 
-import com.adel.batch.processordemo.batch.repository.BookRepository;
+import com.adel.batch.processordemo.batch.repository.mongo.BookRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
