@@ -1,4 +1,4 @@
-package com.adel.batch.processordemo.batch.document;
+package com.adel.batch.processordemo.batch.document.mongo;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

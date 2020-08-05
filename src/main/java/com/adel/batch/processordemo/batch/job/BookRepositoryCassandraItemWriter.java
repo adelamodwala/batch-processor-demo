@@ -1,7 +1,7 @@
 package com.adel.batch.processordemo.batch.job;
 
-import com.adel.batch.processordemo.batch.document.mongo.BookDocument;
-import com.adel.batch.processordemo.batch.repository.mongo.BookRepository;
+import com.adel.batch.processordemo.batch.document.cassandra.BookDocument;
+import com.adel.batch.processordemo.batch.repository.cassandra.BookRepositoryCassandra;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.batch.item.ItemWriter;
@@ -41,11 +41,11 @@ import java.util.List;
  * @author Mahmoud Ben Hassine
  * @since 2.2
  */
-public class BookBulkRepositoryItemWriter<T> implements ItemWriter<T>, InitializingBean {
+public class BookRepositoryCassandraItemWriter<T> implements ItemWriter<T>, InitializingBean {
 
     protected static final Log logger = LogFactory.getLog(RepositoryItemWriter.class);
 
-    private BookRepository repository;
+    private BookRepositoryCassandra repository;
 
     /**
      * Set the {@link CrudRepository} implementation
@@ -53,7 +53,7 @@ public class BookBulkRepositoryItemWriter<T> implements ItemWriter<T>, Initializ
      *
      * @param repository the Spring Data repository to be set
      */
-    public void setRepository(BookRepository repository) {
+    public void setRepository(BookRepositoryCassandra repository) {
         this.repository = repository;
     }
 

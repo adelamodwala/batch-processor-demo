@@ -1,6 +1,6 @@
 package com.adel.batch.processordemo.batch;
 
-import com.adel.batch.processordemo.batch.document.BookDocument;
+import com.adel.batch.processordemo.batch.document.mongo.BookDocument;
 import com.adel.batch.processordemo.batch.job.BookBulkRepositoryItemWriter;
 import com.adel.batch.processordemo.batch.job.JobListener;
 import com.adel.batch.processordemo.batch.repository.mongo.BookRepository;
@@ -8,7 +8,6 @@ import com.adel.batch.processordemo.model.avro.Book;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -24,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -38,10 +36,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-@Configuration
-@EnableBatchProcessing
+//@Configuration
+//@EnableBatchProcessing
 @Slf4j
-public class BatchConfig {
+public class BatchConfigMongo {
 
     public JobBuilderFactory jobBuilderFactory;
     public StepBuilderFactory stepBuilderFactory;
@@ -52,7 +50,7 @@ public class BatchConfig {
     @Autowired
     private AvroItemReader<Book> avroItemReader;
 
-    public BatchConfig(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, BookRepository bookRepository) {
+    public BatchConfigMongo(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, BookRepository bookRepository) {
         this.jobBuilderFactory = jobBuilderFactory;
         this.stepBuilderFactory = stepBuilderFactory;
         this.bookRepository = bookRepository;

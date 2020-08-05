@@ -1,6 +1,6 @@
 package com.adel.batch.processordemo.batch.repository.mongo;
 
-import com.adel.batch.processordemo.batch.document.BookDocument;
+import com.adel.batch.processordemo.batch.document.mongo.BookDocument;
 import com.mongodb.bulk.BulkWriteResult;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.InsertOneModel;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Component
+//@Component
 public class BookRepositoryBulkImpl implements BookRepositoryBulk {
 
     private final MongoTemplate mongoTemplate;
